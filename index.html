@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./vue.js"></script>
+    <title>Latest Products</title>
+</head>
+<body>
+
+<div id="app">
+
+    <div ref="orb1" id="orb1"></div>
+    <div ref="orb2" id="orb2"></div>
+    <div ref="orb3" id="orb3"></div>
+    <div ref="orb4" id="orb4"></div>
+
+    <transition name="fade" mode="out-in">
+        <div v-if="isLoading" class="loader">
+            <h4>Loading...<div class="lds-dual-ring"></div></h4>
+        </div>
+    </transition>
+
+    <transition name="fade" mode="out-in">
+        <section id="products" ref="products" class="container-fluid" v-if="!isLoading && !currentProduct.id">
+            <div class="row">
+                <div class="text-center">
+                    <div class="label my-3">
+                        New for 2022
+                    </div>
+                    <h1 class="mb-5">
+                        Latest Products
+                    </h1>
+                </div>
+            </div>
+            <div class="row px-5" id ="results">
+                <div class="col-lg-4 my-3 prodWidthCap" v-for="product in products">
+                    <img v-bind:src="product.image" alt="" class="w-100">
+                    <h2>{{product.name}}</h2>
+                    <h3>&pound;{{product.price.replace(".00","")}}</h3>
+                    <p>{{product.shortDescription}}</p>
+                    <br>
+                    <a href="#" class="button button-purple w-100" @click="getProducts(1)">
+                        View Product
+                    </a>
+                </div>
+            </div>
+        </section>
+    </transition>
+    <transition name="fade" mode="out-in">
+        <section ref="detail" id="detail" v-if="!isLoading && currentProduct.id">
+            <div class="buy-bar d-flex d-lg-none">
+                <div>
+                    <h4 class="my-0 mx-2" id="mobilePrice">
+                        &pound;{{currentProduct.price}}
+                    </h4>
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <a href="#" class="button button-green mx-2">
+                        Buy now
+                    </a>
+                    <a class="button button-purple button-small mx-2" href="#">
+                        <svg width="28" height="25" viewBox="0 0 28 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.5 0.5C5.01562 0.5 5.48438 0.921875 5.57812 1.4375L5.67188 2H25.3594C26.3438 2 27.0938 2.98438 26.8125 3.92188L24.2812 12.9219C24.0938 13.5781 23.5312 14 22.8281 14H7.96875L8.39062 16.25H22.875C23.4844 16.25 24 16.7656 24 17.375C24 18.0312 23.4844 18.5 22.875 18.5H7.45312C6.9375 18.5 6.46875 18.125 6.375 17.6094L3.5625 2.75H1.125C0.46875 2.75 0 2.28125 0 1.625C0 1.01562 0.46875 0.5 1.125 0.5H4.5ZM6 22.25C6 21.0312 6.98438 20 8.25 20C9.46875 20 10.5 21.0312 10.5 22.25C10.5 23.5156 9.46875 24.5 8.25 24.5C6.98438 24.5 6 23.5156 6 22.25ZM24 22.25C24 23.5156 22.9688 24.5 21.75 24.5C20.4844 24.5 19.5 23.5156 19.5 22.25C19.5 21.0312 20.4844 20 21.75 20C22.9688 20 24 21.0312 24 22.25Z" fill="#FFFFFE"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <div class="container" id="productBanner">
+                    <div id="back" @click="getProducts()">
+                        Back to all products
+                    </div>
+                    <img id="productImage" v-bind:src="currentProduct.image" alt="">
+                    <div class="row">
+                        <div class="text-center">
+                            <h1>{{ currentProduct.name }}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="w-100 d-flex d-lg-none flex-row justify-content-start align-items-center mb-2" id="productBadgesMobile">
+                            <div v-for="tag in currentProduct.tags">
+                                <div class='badge me-3'>
+                                    {{ tag }}
+                                </div>
+                            </div>
+                        </div>  
+                        <div class="col-lg-7">
+                            <h3>
+                                {{ currentProduct.pageTitle }}
+                            </h3>
+                            <h5>
+                                {{ currentProduct.pageSubtitle }}
+                            </h5>
+                            <p>
+                                {{ currentProduct.pageBody }}
+                            </p>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="d-none d-lg-flex flex-row justify-content-start align-items-center mb-3" id="productBadges">
+                                <div v-for="tag in currentProduct.tags">
+                                    <div class='badge me-3'>
+                                        {{ tag }}
+                                    </div>
+                                </div>
+                            </div>      
+                            <p id="productDescription" class="text-grey-medium">
+                                {{currentProduct.description}}
+                            </p>
+                            <div class="d-none d-lg-flex my-3">
+                                <h3>
+                                    &pound;{{currentProduct.price.replace(".00","")}}
+                                </h3>
+                            </div>
+                            <div class="d-none d-lg-flex flex-row justify-content-start align-items-center">
+                                <a href="#" class="button button-green me-3">
+                                    Buy now
+                                </a>
+                                <a href="#" class="button button-purple-clear">
+                                    Add to cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </transition>
+
+</div>
+
+<script>
+    const { createApp } = Vue
+    createApp({
+        data() {
+            return {
+                products: [],
+                currentProduct: [],
+                isLoading: false
+            }
+        },
+        methods: {
+            animateOrbs(a){
+                if(a == "up"){
+                    this.$refs.orb1.style.top = "-15%"
+                    this.$refs.orb2.style.top = "-45%"
+                    this.$refs.orb3.style.top = "-48%"
+                    this.$refs.orb4.style.top = "-25%"
+                } else {
+                    this.$refs.orb1.style.top = "-55%"
+                    this.$refs.orb2.style.top = "-75%"
+                    this.$refs.orb3.style.top = "-88%"
+                    this.$refs.orb4.style.top = "-55%"
+                }
+            },
+            getProducts(x) { 
+                this.isLoading = true
+                if (!x){
+                    fetch('https://62b9b32c41bf319d228329df.mockapi.io/Product')
+                    .then(response => response.json())
+                    .then(data => {
+                        this.products = data.items
+                        this.currentProduct = []
+                        this.isLoading = false
+                        document.title = "Latest Products"
+                        this.animateOrbs("down")
+                    })
+                } else {
+                    fetch('https://62b9b32c41bf319d228329df.mockapi.io/Product/'+x)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.currentProduct = data
+                        this.isLoading = false
+                        document.title = data.pageTitle
+                        this.animateOrbs("up")
+                    })
+                }
+            }
+        },
+        mounted(){
+            this.getProducts()
+        }
+    }).mount('#app')
+</script>
+
+
+</body>
