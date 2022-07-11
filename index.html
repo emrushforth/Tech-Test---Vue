@@ -39,7 +39,7 @@
                     <h3>&pound;{{product.price.replace(".00","")}}</h3>
                     <p>{{product.shortDescription}}</p>
                     <br>
-                    <a href="#" class="button button-purple w-100" @click="getProducts(1)">
+                    <a href="#" class="button button-purple w-100" @click="getProducts(product.id)">
                         View Product
                     </a>
                 </div>
